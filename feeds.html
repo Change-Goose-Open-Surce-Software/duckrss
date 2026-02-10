@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Alle Feeds - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">📰 Alle Feed-Items</h2>
+    <p style="color: #00cc00;">
+        Hier sehen Sie alle Feed-Artikel aus Ihren Eingängen und eigenen Beiträgen.
+    </p>
+</div>
+
+{% if items %}
+<div class="box">
+    <h3 class="box-title">Feed-Items ({{ items|length }})</h3>
+    
+    {% for item in items %}
+    <div class="card">
+        <div class="card-title">
+            {% if item.link %}
+                <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+            {% else %}
+                {{ item.title }}
+            {% endif %}
+        </div>
+        
+        <div class="card-meta">
+            {% if item.is_custom %}
+                <span style="color: #00ff00;">✍ Eigener Artikel</span>
+            {% else %}
+                <span style="color: #0099ff;">📥 Aus Eingang: {{ item.input_name or 'Unbekannt' }}</span>
+            {% endif %}
+            
+            {% if item.published %}
+                | <span style="color: #888;">📅 {{ item.published }}</span>
+            {% endif %}
+            
+            {% if item.author %}
+                | <span style="color: #888;">👤 {{ item.author }}</span>
+            {% endif %}
+        </div>
+        
+        {% if item.description %}
+        <div class="card-content">
+            {{ item.description[:300] }}{% if item.description|length > 300 %}...{% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="card-meta">
+            <strong>In Ausgängen:</strong>
+            {% if item.output_names %}
+                <span style="color: #00cc00;">{{ item.output_names }}</span>
+            {% else %}
+                <span style="color: #888;">Noch keinem Ausgang zugeordnet</span>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 10px;">
+            <button type="button" class="btn" onclick="toggleShareForm({{ item.id }})">
+                🔗 Zu Ausgang teilen
+            </button>
+            
+            {% if item.link %}
+            <a href="{{ item.link }}" target="_blank" class="btn">
+                🔗 Artikel öffnen
+            </a>
+            {% endif %}
+        </div>
+        
+        <div id="share-form-{{ item.id }}" style="display: none; margin-top: 15px; border-top: 1px solid #00ff00; padding-top: 15px;">
+            <form method="POST" action="{{ url_for('share_item', item_id=item.id) }}">
+                <label>Zu diesem Ausgang teilen:</label>
+                <select name="output_id" required style="width: 100%; margin-bottom: 10px;">
+                    <option value="">-- Ausgang wählen --</option>
+                    {% for output in outputs %}
+                    <option value="{{ output.id }}">{{ output.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn">Teilen</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="info">
+    <p>Noch keine Feed-Items vorhanden.</p>
+    <p style="margin-top: 10px;">
+        • <a href="{{ url_for('inputs') }}">Fügen Sie einen Eingang hinzu</a> und aktualisieren Sie ihn<br>
+        • Oder <a href="{{ url_for('editor') }}">schreiben Sie einen eigenen Artikel</a>
+    </p>
+</div>
+{% endif %}
+
+<div class="terminal" style="margin-top: 30px;">
+    <pre>
+> Feed-Datenbank: {{ items|length }} Artikel
+> Bereit zum Teilen und Exportieren
+> System Status: OK
+    </pre>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleShareForm(itemId) {
+    const form = document.getElementById('share-form-' + itemId);
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

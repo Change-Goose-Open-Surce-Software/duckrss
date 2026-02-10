@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">Dashboard</h2>
+    <p style="color: #00cc00;">Willkommen zurück, <strong>{{ username }}</strong>!</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-title">📥 Eingänge</div>
+        <div class="card-content">
+            <p style="font-size: 2em; color: #00ff00; text-align: center;">
+                {{ inputs|length }}
+            </p>
+            <p style="text-align: center;">Externe RSS Feeds</p>
+        </div>
+        <a href="{{ url_for('inputs') }}" class="btn" style="width: 100%; display: block; text-align: center;">
+            Verwalten
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">📤 Ausgänge</div>
+        <div class="card-content">
+            <p style="font-size: 2em; color: #00ff00; text-align: center;">
+                {{ outputs|length }}
+            </p>
+            <p style="text-align: center;">Eigene RSS Feeds</p>
+        </div>
+        <a href="{{ url_for('outputs') }}" class="btn" style="width: 100%; display: block; text-align: center;">
+            Verwalten
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">✏️ Editor</div>
+        <div class="card-content">
+            <p style="text-align: center; margin: 20px 0;">
+                Erstellen Sie eigene Feed-Artikel
+            </p>
+        </div>
+        <a href="{{ url_for('editor') }}" class="btn" style="width: 100%; display: block; text-align: center;">
+            Artikel schreiben
+        </a>
+    </div>
+</div>
+
+{% if inputs %}
+<div class="box" style="margin-top: 30px;">
+    <h3 class="box-title">Letzte Eingänge</h3>
+    {% for input in inputs[:5] %}
+    <div class="card">
+        <div class="card-title">{{ input.name }}</div>
+        <div class="card-meta">
+            <code>{{ input.feed_url }}</code>
+        </div>
+        <div class="card-meta">
+            {% if input.last_fetch %}
+            Zuletzt aktualisiert: {{ input.last_fetch }}
+            {% else %}
+            Noch nicht abgerufen
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if outputs %}
+<div class="box" style="margin-top: 30px;">
+    <h3 class="box-title">Ihre Ausgänge</h3>
+    {% for output in outputs[:5] %}
+    <div class="card">
+        <div class="card-title">{{ output.name }}</div>
+        <div class="card-meta">
+            <code>http://{{ request.host }}/exit/{{ output.slug }}.xml</code>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="terminal" id="terminal" style="margin-top: 30px; min-height: 150px;">
+    <div>[{{ '2026-02-09 12:00:00' }}] System bereit.</div>
+</div>
+
+<div class="ascii-art" style="margin-top: 30px;">
+    <span id="ascii-duck">( o.o)</span>
+   &lt;|   |&gt;
+    |   |
+   /     \
+</div>
+{% endblock %}

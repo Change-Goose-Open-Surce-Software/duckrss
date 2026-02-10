@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Editor - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">✏️ Feed-Editor</h2>
+    <p style="color: #00cc00;">
+        Erstellen Sie eigene Feed-Artikel und veröffentlichen Sie diese in Ihren Ausgängen.
+    </p>
+</div>
+
+<div class="box">
+    <h3 class="box-title">Neuen Artikel erstellen</h3>
+    
+    <form method="POST" action="{{ url_for('create_custom_feed') }}">
+        <label>Titel:</label>
+        <input type="text" name="title" required placeholder="z.B. Lokale Nachrichten vom 9. Februar 2026">
+        
+        <label>Inhalt:</label>
+        <textarea name="content" required placeholder="Schreiben Sie hier Ihren Artikel...
+        
+Sie können normalen Text, HTML oder Markdown verwenden.
+
+Beispiel:
+Heute wurde in unserer Stadt ein neues Gemeindezentrum eröffnet. 
+Bürgermeister Schmidt war vor Ort und hielt eine Rede...
+
+Dies ist ein eigener Feed-Artikel, den Sie in Ihren RSS Feeds veröffentlichen können." style="min-height: 300px;"></textarea>
+        
+        <label>In diesen Ausgängen veröffentlichen:</label>
+        <div style="border: 1px solid #00ff00; padding: 10px; max-height: 250px; overflow-y: auto;">
+            {% if outputs %}
+                {% for output in outputs %}
+                <div>
+                    <input type="checkbox" name="output_ids" value="{{ output.id }}" id="output-{{ output.id }}">
+                    <label for="output-{{ output.id }}" style="display: inline; margin: 0;">
+                        {{ output.name }}
+                    </label>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #888;">
+                    Keine Ausgänge vorhanden. 
+                    <a href="{{ url_for('outputs') }}">Erstellen Sie zuerst einen Ausgang</a>
+                </p>
+            {% endif %}
+        </div>
+        
+        <div class="info" style="margin: 15px 0;">
+            <strong>💡 Tipps:</strong><br>
+            • Ihre Artikel werden mit aktuellem Datum/Uhrzeit veröffentlicht<br>
+            • Sie können HTML-Tags für Formatierung verwenden<br>
+            • Der Artikel erscheint sofort in den gewählten Ausgängen<br>
+            • Sie können den Artikel später noch zu weiteren Ausgängen teilen
+        </div>
+        
+        {% if outputs %}
+        <input type="submit" value="Artikel veröffentlichen">
+        {% else %}
+        <button type="button" class="btn" disabled style="opacity: 0.5;">
+            Zuerst einen Ausgang erstellen
+        </button>
+        {% endif %}
+    </form>
+</div>
+
+<div class="box" style="margin-top: 30px;">
+    <h3 class="box-title">📝 Verwendungsbeispiele</h3>
+    
+    <div class="card">
+        <div class="card-title">Lokale Nachrichten</div>
+        <div class="card-content">
+            <p>Als lokaler Redakteur können Sie Berichte über Ihre Gemeinde schreiben und diese in einem "Lokale Nachrichten" Ausgang veröffentlichen.</p>
+            <p style="margin-top: 10px; color: #00cc00;">
+                → Kombinieren Sie dies mit regionalen News-Feeds für einen umfassenden Nachrichten-Feed
+            </p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">Projekt-Updates</div>
+        <div class="card-content">
+            <p>Teilen Sie Updates zu Ihren Projekten mit Ihrem Team oder der Öffentlichkeit.</p>
+            <p style="margin-top: 10px; color: #00cc00;">
+                → Perfekt für Entwickler-Blogs, Changelog-Feeds oder Release Notes
+            </p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">Kuratierte Sammlungen</div>
+        <div class="card-content">
+            <p>Wählen Sie interessante Artikel aus verschiedenen Feeds aus und kommentieren Sie diese.</p>
+            <p style="margin-top: 10px; color: #00cc00;">
+                → Erstellen Sie thematische Sammlungen für Ihre Leser
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="terminal" style="margin-top: 30px;">
+    <pre>
+> Editor bereit
+> Unterstützte Formate: Text, HTML, Markdown
+> Veröffentlichung: Sofort
+> Status: Bereit zum Schreiben
+    </pre>
+</div>
+
+<div class="ascii-art" style="margin-top: 20px;">
+  ___________
+ |  EDITOR  |
+ |   ✏️     |
+ |___________|
+     ||
+   (o.o)
+  &lt;|   |&gt;
+   |   |
+</div>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Registrieren - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">Neues Konto erstellen</h2>
+    
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    
+    <form method="POST">
+        <label>Benutzername:</label>
+        <input type="text" name="username" required placeholder="Wählen Sie einen Benutzernamen">
+        
+        <div class="box" style="margin: 20px 0;">
+            <h3 style="color: #00ff00; margin-bottom: 10px;">Sicherheitseinstellungen</h3>
+            <p style="color: #00cc00; margin-bottom: 15px;">
+                Konfigurieren Sie, wie viele Passwörter und Passkeys für die Anmeldung erforderlich sind.
+            </p>
+            
+            <label>Erforderliche Passwörter:</label>
+            <input type="number" name="required_passwords" min="0" max="10" value="1" 
+                   style="width: 100px;" required>
+            
+            <label>Erforderliche Passkeys:</label>
+            <input type="number" name="required_passkeys" min="0" max="5" value="0" 
+                   style="width: 100px;" required>
+            
+            <div class="info" style="margin-top: 10px; font-size: 0.9em;">
+                Beispiele:<br>
+                • 0 Passwörter + 2 Passkeys<br>
+                • 5 Passwörter + 1 Passkey<br>
+                • 1 Passwort + 0 Passkeys<br>
+                • 3 Passwörter + 2 Passkeys
+            </div>
+        </div>
+        
+        <div class="password-group">
+            <label>Passwörter festlegen:</label>
+            <p style="color: #008800; font-size: 0.9em;">
+                Legen Sie mindestens so viele Passwörter fest, wie Sie oben als erforderlich angegeben haben.
+            </p>
+            <div id="password-container">
+                <div class="password-field">
+                    <label>Passwort 1:</label>
+                    <input type="password" name="password_1" placeholder="Passwort 1">
+                </div>
+            </div>
+            <button type="button" id="add-password" class="btn">+ Weiteres Passwort hinzufügen</button>
+        </div>
+        
+        <div class="info" style="margin: 20px 0;">
+            <strong>Hinweis zu Passkeys:</strong><br>
+            Passkeys (WebAuthn) werden nach der Registrierung in den Einstellungen konfiguriert.
+        </div>
+        
+        <input type="submit" value="Konto erstellen">
+    </form>
+    
+    <p style="margin-top: 20px; text-align: center;">
+        <a href="{{ url_for('login') }}">Bereits ein Konto? Jetzt anmelden!</a>
+    </p>
+</div>
+
+<div class="terminal" style="margin-top: 20px;">
+    <pre>
+> Registrierungssystem online
+> Bereit für neuen Benutzer...
+> Multi-Faktor-Authentifizierung verfügbar
+    </pre>
+</div>
+{% endblock %}

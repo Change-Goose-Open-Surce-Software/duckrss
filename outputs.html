@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Ausgänge - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">📤 Ausgänge (Ihre RSS Feeds)</h2>
+    <p style="color: #00cc00;">
+        Hier können Sie eigene RSS Feeds erstellen und hosten. Diese Feeds können Sie mit anderen teilen oder selbst abonnieren.
+    </p>
+</div>
+
+<div class="box">
+    <h3 class="box-title">Neuen Ausgang erstellen</h3>
+    <form method="POST" action="{{ url_for('create_output') }}">
+        <label>Name des Feeds:</label>
+        <input type="text" name="name" required placeholder="z.B. Nachrichten">
+        
+        <label>Beschreibung (optional):</label>
+        <textarea name="description" placeholder="Kurze Beschreibung Ihres Feeds"></textarea>
+        
+        <div class="info">
+            Nach dem Erstellen erhalten Sie eine öffentliche URL für Ihren Feed.
+        </div>
+        
+        <input type="submit" value="Ausgang erstellen">
+    </form>
+</div>
+
+{% if outputs %}
+<div class="box">
+    <h3 class="box-title">Ihre Ausgänge ({{ outputs|length }})</h3>
+    
+    {% for output in outputs %}
+    <div class="card">
+        <div class="card-title">{{ output.name }}</div>
+        
+        {% if output.description %}
+        <div class="card-content">
+            {{ output.description }}
+        </div>
+        {% endif %}
+        
+        <div class="card-meta">
+            <strong>Erstellt:</strong> {{ output.created_at }}
+        </div>
+        
+        <div class="feed-url">
+            <strong>Feed URL:</strong><br>
+            <code>{{ base_url }}/exit/{{ output.slug }}.xml</code>
+        </div>
+        
+        <div style="margin-top: 10px;">
+            <button type="button" class="btn copy-btn" data-url="{{ base_url }}/exit/{{ output.slug }}.xml">
+                📋 URL kopieren
+            </button>
+            
+            <a href="{{ base_url }}/exit/{{ output.slug }}.xml" target="_blank" class="btn">
+                🔗 Feed öffnen
+            </a>
+        </div>
+        
+        <div class="info" style="margin-top: 15px; font-size: 0.9em;">
+            <strong>So nutzen Sie diesen Feed:</strong><br>
+            1. Kopieren Sie die Feed URL<br>
+            2. Fügen Sie sie in Ihren RSS-Reader ein (z.B. Gnome Feeds, Feedly)<br>
+            3. Oder teilen Sie die URL mit anderen
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="info">
+    Noch keine Ausgänge vorhanden. Erstellen Sie Ihren ersten Ausgang!
+</div>
+{% endif %}
+
+<div class="box" style="margin-top: 30px;">
+    <h3 class="box-title">💡 Verwendungsbeispiel</h3>
+    <div class="terminal">
+        <pre>
+# Feed in Gnome Feeds hinzufügen:
+1. Gnome Feeds öffnen
+2. Auf "+" klicken
+3. Feed URL einfügen: {{ base_url }}/exit/IHR-FEED.xml
+4. Fertig!
+
+# Feed selbst abonnieren:
+curl {{ base_url }}/exit/IHR-FEED.xml
+
+# Feed in anderen Apps nutzen:
+- Feedly
+- NewsBlur
+- The Old Reader
+- Jeder andere RSS Reader
+        </pre>
+    </div>
+</div>
+
+<div class="ascii-art" style="margin-top: 20px;">
+     RSS
+   -------
+  (  o.o  )
+  |&gt; --- &lt;|
+   |     |
+  /       \
+</div>
+
+{% endblock %}

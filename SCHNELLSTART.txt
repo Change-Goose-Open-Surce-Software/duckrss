@@ -1,0 +1,151 @@
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║     🦆 DuckRSS - Schnellstart                            ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+INSTALLATION (als root/sudo):
+────────────────────────────────────────────────────────────
+cd duckrss
+sudo ./install.sh
+
+
+SERVER STARTEN:
+────────────────────────────────────────────────────────────
+# Als Service (empfohlen):
+sudo systemctl start duckrss
+sudo systemctl status duckrss
+
+# Oder manuell:
+python3 app.py
+
+
+ZUGRIFF:
+────────────────────────────────────────────────────────────
+http://localhost:5000
+
+Für externen Zugriff:
+1. Port 5000 öffnen: sudo ufw allow 5000
+2. http://IHRE-IP:5000
+
+
+ERSTE SCHRITTE:
+────────────────────────────────────────────────────────────
+1. Konto registrieren
+   - Wähle Benutzername
+   - Konfiguriere Sicherheit (z.B. 2 Passwörter)
+   - Gebe Passwörter ein
+
+2. Eingang erstellen (externer RSS Feed)
+   - Name: "Tech News"
+   - URL: https://example.com/feed.xml
+   - Feed abrufen
+
+3. Ausgang erstellen (eigener RSS Feed)
+   - Name: "Meine Nachrichten"
+   - Erhalte URL: http://IHRE-IP:5000/exit/meine-nachrichten.xml
+
+4. Eingänge zu Ausgang verknüpfen
+   - In "Eingänge" → "Zu Ausgang hinzufügen"
+
+5. Eigene Artikel schreiben
+   - Editor öffnen
+   - Artikel schreiben und veröffentlichen
+
+
+BEISPIEL: LOKALER REDAKTEUR
+────────────────────────────────────────────────────────────
+1. Eingänge hinzufügen:
+   - "Regionale Zeitung" → https://zeitung.de/feed
+   - "Bundesweit" → https://news.de/feed
+
+2. Ausgang erstellen:
+   - "Lokale & Regionale News"
+
+3. Eingänge verknüpfen mit Ausgang
+
+4. Eigene lokale Berichte im Editor schreiben
+
+5. Feed-URL teilen:
+   http://IHRE-IP:5000/exit/lokale-regionale-news.xml
+
+6. Nachbarn können Feed in Gnome Feeds, Feedly, etc. nutzen
+
+
+RSS FEED NUTZEN:
+────────────────────────────────────────────────────────────
+# In Gnome Feeds:
+1. Gnome Feeds öffnen
+2. "+" klicken
+3. Feed URL einfügen
+4. Fertig!
+
+# Mit curl:
+curl http://IHRE-IP:5000/exit/FEED-NAME.xml
+
+# In anderen RSS Readern:
+Feedly, NewsBlur, The Old Reader, etc.
+Einfach Feed URL einfügen!
+
+
+SYSTEMD BEFEHLE:
+────────────────────────────────────────────────────────────
+sudo systemctl start duckrss      # Starten
+sudo systemctl stop duckrss       # Stoppen
+sudo systemctl restart duckrss    # Neu starten
+sudo systemctl status duckrss     # Status prüfen
+sudo systemctl enable duckrss     # Autostart aktivieren
+sudo journalctl -u duckrss -f     # Logs ansehen
+
+
+PORTS & FIREWALL:
+────────────────────────────────────────────────────────────
+# Port öffnen (für externen Zugriff):
+sudo ufw allow 5000
+
+# Port prüfen:
+sudo netstat -tulpn | grep 5000
+
+
+DATENBANK-SPEICHERORT:
+────────────────────────────────────────────────────────────
+data/duckrss.db
+
+# Backup erstellen:
+cp data/duckrss.db data/duckrss.db.backup
+
+
+WICHTIGE DATEIEN:
+────────────────────────────────────────────────────────────
+app.py           - Hauptanwendung
+database.py      - Datenbank-Schema
+auth.py          - Authentifizierung
+rss_manager.py   - RSS-Logik
+static/css/      - Styling
+templates/       - HTML-Templates
+
+
+FEHLERBEHEBUNG:
+────────────────────────────────────────────────────────────
+# Logs ansehen:
+sudo journalctl -u duckrss -n 50
+
+# Port belegt?
+sudo netstat -tulpn | grep 5000
+
+# Datenbank neu initialisieren:
+python3 database.py
+
+# Manuelle Debug-Ausführung:
+python3 app.py
+
+
+HILFE & DOKUMENTATION:
+────────────────────────────────────────────────────────────
+Siehe README.md für ausführliche Dokumentation
+
+
+════════════════════════════════════════════════════════════
+Made with 🦆 and ❤️
+Viel Erfolg mit DuckRSS!
+════════════════════════════════════════════════════════════

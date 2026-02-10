@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Eingänge - DuckRSS{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="box-title">📥 Eingänge (Externe RSS Feeds)</h2>
+    <p style="color: #00cc00;">
+        Hier können Sie externe RSS Feeds abonnieren und in Ihre Ausgänge integrieren.
+    </p>
+</div>
+
+<div class="box">
+    <h3 class="box-title">Neuen Eingang erstellen</h3>
+    <form method="POST" action="{{ url_for('create_input') }}">
+        <label>Name des Feeds:</label>
+        <input type="text" name="name" required placeholder="z.B. Internationale Nachrichten">
+        
+        <label>Feed URL:</label>
+        <input type="url" name="feed_url" required placeholder="http://seite.web/news/feed">
+        
+        <label>Optional: Zu Ausgängen hinzufügen:</label>
+        <div style="border: 1px solid #00ff00; padding: 10px; max-height: 200px; overflow-y: auto;">
+            {% if outputs %}
+                {% for output in outputs %}
+                <div>
+                    <input type="checkbox" name="output_ids" value="{{ output.id }}" id="out-{{ output.id }}">
+                    <label for="out-{{ output.id }}" style="display: inline; margin: 0;">
+                        {{ output.name }}
+                    </label>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #888;">Keine Ausgänge vorhanden. <a href="{{ url_for('outputs') }}">Ausgänge erstellen</a></p>
+            {% endif %}
+        </div>
+        
+        <input type="submit" value="Eingang erstellen">
+    </form>
+</div>
+
+{% if inputs %}
+<div class="box">
+    <h3 class="box-title">Ihre Eingänge ({{ inputs|length }})</h3>
+    
+    {% for input in inputs %}
+    <div class="card">
+        <div class="card-title">{{ input.name }}</div>
+        <div class="card-meta">
+            <strong>URL:</strong> <code>{{ input.feed_url }}</code>
+        </div>
+        <div class="card-meta">
+            <strong>Status:</strong> 
+            {% if input.active %}
+                <span style="color: #00ff00;">✓ Aktiv</span>
+            {% else %}
+                <span style="color: #ff0000;">✗ Inaktiv</span>
+            {% endif %}
+        </div>
+        <div class="card-meta">
+            <strong>Zuletzt aktualisiert:</strong> 
+            {% if input.last_fetch %}
+                {{ input.last_fetch }}
+            {% else %}
+                <span style="color: #888;">Noch nicht abgerufen</span>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 10px;">
+            <form method="POST" action="{{ url_for('fetch_input', input_id=input.id) }}" style="display: inline;">
+                <button type="submit" class="btn">🔄 Feed abrufen</button>
+            </form>
+            
+            <button type="button" class="btn" onclick="toggleLinkForm({{ input.id }})">
+                🔗 Zu Ausgang hinzufügen
+            </button>
+        </div>
+        
+        <div id="link-form-{{ input.id }}" style="display: none; margin-top: 15px; border-top: 1px solid #00ff00; padding-top: 15px;">
+            <form method="POST" action="{{ url_for('link_input', input_id=input.id) }}">
+                <label>Zu diesen Ausgängen hinzufügen:</label>
+                <div style="border: 1px solid #00ff00; padding: 10px; max-height: 150px; overflow-y: auto;">
+                    {% for output in outputs %}
+                    <div>
+                        <input type="checkbox" name="output_ids" value="{{ output.id }}" id="link-{{ input.id }}-{{ output.id }}">
+                        <label for="link-{{ input.id }}-{{ output.id }}" style="display: inline; margin: 0;">
+                            {{ output.name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn">Verknüpfen</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="info">
+    Noch keine Eingänge vorhanden. Erstellen Sie Ihren ersten Eingang!
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleLinkForm(inputId) {
+    const form = document.getElementById('link-form-' + inputId);
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

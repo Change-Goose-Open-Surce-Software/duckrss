@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DuckRSS{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="ascii-art">
+   ___         _   ___  ___ ___ 
+  |   \ _  _ __| |_| _ \/ __/ __|
+  | |) | || / _| / /   /\__ \__ \
+  |___/ \_,_\__|_\_\_|_\|___/___/
+            </div>
+            <h1><span class="logo">🦆</span> DuckRSS</h1>
+            <p class="subtitle">Retro RSS Feed Manager</p>
+        </header>
+        
+        {% if session.username %}
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('inputs') }}">Eingänge</a>
+            <a href="{{ url_for('outputs') }}">Ausgänge</a>
+            <a href="{{ url_for('feeds') }}">Alle Feeds</a>
+            <a href="{{ url_for('editor') }}">Editor</a>
+            <a href="{{ url_for('logout') }}" style="border-color: #ff0000; color: #ff0000;">Abmelden</a>
+        </nav>
+        <div class="box">
+            <span style="color: #00cc00;">Angemeldet als:</span> <strong>{{ session.username }}</strong>
+        </div>
+        {% endif %}
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer>
+            <p>DuckRSS v1.0 - Debian RSS Manager</p>
+            <p>© 2026 - Retro Computing Division</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

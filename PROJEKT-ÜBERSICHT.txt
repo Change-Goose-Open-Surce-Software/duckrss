@@ -1,0 +1,334 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║   🦆 DuckRSS - Retro RSS Feed Manager für Debian                         ║
+║                                                                           ║
+║   Ein selbst-gehosteter RSS Manager im Terminal-Style                    ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  FUNKTIONEN                                                               █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+✓ Multi-Faktor-Authentifizierung (Passwörter + Passkeys)
+✓ Externe RSS Feeds abonnieren (Eingänge)
+✓ Eigene RSS Feeds erstellen (Ausgänge)
+✓ Mehrere Eingänge in einen Ausgang kombinieren
+✓ Eigene Artikel schreiben und veröffentlichen
+✓ Feed-Items zwischen Ausgängen teilen
+✓ Retro Terminal-Design (Grün auf Schwarz)
+✓ Responsive Weboberfläche
+✓ Öffentliche Feed-URLs
+✓ SQLite Datenbank
+✓ Nur APT-Pakete (kein pip!)
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  DATEISTRUKTUR                                                            █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+duckrss/
+│
+├── 📄 README.md               Ausführliche Dokumentation
+├── 📄 SCHNELLSTART.txt        Schnellstartanleitung
+├── 📄 DATEISTRUKTUR.txt       Diese Datei
+├── 📄 PROJEKT-ÜBERSICHT.txt   Projekt-Übersicht
+│
+├── 🔧 install.sh              Installations-Script
+├── 🐍 app.py                  Flask Hauptanwendung
+├── 🐍 database.py             Datenbank-Schema und Init
+├── 🐍 auth.py                 Authentifizierung
+├── 🐍 rss_manager.py          RSS Feed-Logik
+│
+├── 📁 static/                 Statische Dateien
+│   ├── 📁 css/
+│   │   └── 🎨 retro.css       Retro-Styling
+│   └── 📁 js/
+│       └── 📜 app.js          Client JavaScript
+│
+├── 📁 templates/              HTML-Templates
+│   ├── 📄 base.html           Basis-Template
+│   ├── 📄 login.html          Login-Seite
+│   ├── 📄 register.html       Registrierung
+│   ├── 📄 dashboard.html      Dashboard
+│   ├── 📄 inputs.html         Eingänge-Verwaltung
+│   ├── 📄 outputs.html        Ausgänge-Verwaltung
+│   ├── 📄 feeds.html          Alle Feeds
+│   └── 📄 editor.html         RSS Editor
+│
+└── 📁 data/                   Datenverzeichnis
+    └── 🗄️ duckrss.db          SQLite Datenbank (nach Init)
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  TECHNOLOGIE-STACK                                                        █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+Backend:
+  • Python 3
+  • Flask (Webframework)
+  • SQLite (Datenbank)
+  • feedparser (RSS Parsing)
+  • bcrypt (Passwort-Hashing)
+
+Frontend:
+  • HTML5
+  • CSS3 (Retro Terminal Style)
+  • Vanilla JavaScript
+  • Responsive Design
+
+Installation:
+  • Nur APT-Pakete
+  • Kein pip/virtualenv nötig
+  • Systemd Service
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  INSTALLATION                                                             █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+1. Dateien auf Debian Server kopieren
+
+2. Als root/sudo ausführen:
+   cd duckrss
+   sudo ./install.sh
+
+3. Server starten:
+   sudo systemctl start duckrss
+
+4. Zugriff:
+   http://localhost:5000
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  VERWENDUNG                                                               █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+EINGÄNGE (Externe Feeds abonnieren):
+  1. "Eingänge" öffnen
+  2. "Neuen Eingang erstellen"
+  3. Name + Feed URL eingeben
+  4. "Feed abrufen" klicken
+
+AUSGÄNGE (Eigene Feeds erstellen):
+  1. "Ausgänge" öffnen
+  2. "Neuen Ausgang erstellen"
+  3. Name + Beschreibung eingeben
+  4. Feed URL erhalten und teilen
+
+ARTIKEL SCHREIBEN:
+  1. "Editor" öffnen
+  2. Titel + Inhalt eingeben
+  3. Ausgänge wählen
+  4. "Veröffentlichen" klicken
+
+FEEDS VERWALTEN:
+  1. "Alle Feeds" öffnen
+  2. Items zwischen Ausgängen teilen
+  3. Übersicht aller Artikel
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  BEISPIEL: LOKALER REDAKTEUR                                              █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+Szenario: Lokale Nachrichten für die Nachbarschaft
+
+1. Eingänge erstellen:
+   • "Regionale Zeitung"
+   • "Bundesweite Nachrichten"
+
+2. Ausgang erstellen:
+   • "Lokale + Regionale News"
+
+3. Eingänge zu Ausgang verknüpfen
+
+4. Eigene lokale Berichte im Editor schreiben:
+   • "Neues Gemeindezentrum eröffnet"
+   • "Lokales Fest am Wochenende"
+
+5. Feed-URL teilen:
+   • http://dimitri.duckdns.org/exit/lokale-regionale-news.xml
+
+6. Nachbarn abonnieren in Gnome Feeds, Feedly, etc.
+
+→ Alle haben lokale UND regionale Nachrichten in einem Feed!
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  SICHERHEIT                                                               █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+AUTHENTIFIZIERUNG:
+  • Konfigurierbar: 0-10 Passwörter
+  • Konfigurierbar: 0-5 Passkeys
+  • Beispiele:
+    - 1 Passwort + 0 Passkeys (Standard)
+    - 5 Passwörter + 1 Passkey (Hochsicher)
+    - 0 Passwörter + 2 Passkeys (Modern)
+    - 3 Passwörter + 2 Passkeys (Hybrid)
+
+GESCHÜTZT:
+  • Konto-Registrierung
+  • Eingänge erstellen/bearbeiten/löschen
+  • Ausgänge erstellen/bearbeiten/löschen
+  • Artikel schreiben/veröffentlichen
+
+ÖFFENTLICH:
+  • RSS Feed URLs (/exit/*.xml)
+  • Keine Authentifizierung für Feed-Leser
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  NETZWERK & ZUGRIFF                                                       █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+LOKAL:
+  http://localhost:5000
+
+NETZWERK:
+  http://192.168.1.100:5000
+
+INTERNET (mit DuckDNS):
+  http://dimitri.duckdns.org:5000
+
+Port öffnen:
+  sudo ufw allow 5000
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  SYSTEMD SERVICE                                                          █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+sudo systemctl start duckrss       # Starten
+sudo systemctl stop duckrss        # Stoppen
+sudo systemctl restart duckrss     # Neustart
+sudo systemctl status duckrss      # Status
+sudo systemctl enable duckrss      # Autostart
+sudo journalctl -u duckrss -f      # Logs
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  ENTWICKLER-INFO                                                          █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+Python Module (via APT):
+  • python3-flask
+  • python3-feedparser
+  • python3-bcrypt
+  • python3-requests
+  • python3-lxml
+
+Datenbank:
+  • SQLite3
+  • Speicherort: data/duckrss.db
+
+API Endpoints:
+  GET  /                          → Login/Dashboard
+  GET  /register                  → Registrierung
+  POST /register                  → Konto erstellen
+  GET  /login                     → Login-Seite
+  POST /login                     → Anmelden
+  GET  /logout                    → Abmelden
+  GET  /dashboard                 → Dashboard
+  GET  /inputs                    → Eingänge
+  POST /inputs/create             → Eingang erstellen
+  POST /inputs/<id>/fetch         → Feed abrufen
+  POST /inputs/<id>/link          → Zu Ausgang verknüpfen
+  GET  /outputs                   → Ausgänge
+  POST /outputs/create            → Ausgang erstellen
+  GET  /feeds                     → Alle Feed-Items
+  POST /feeds/<id>/share          → Item teilen
+  GET  /editor                    → Editor
+  POST /editor/create             → Artikel erstellen
+  GET  /exit/<slug>.xml           → RSS Feed (öffentlich!)
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  DATENBANK-SCHEMA                                                         █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+users                    → Benutzer
+passwords                → Passwort-Hashes
+passkeys                 → WebAuthn Passkeys
+security_requirements    → Sicherheitsanforderungen
+inputs                   → Externe RSS Feeds
+outputs                  → Eigene RSS Feeds
+input_output_mapping     → Eingänge ↔ Ausgänge
+feed_items               → Gecachte Artikel
+item_output_mapping      → Items ↔ Ausgänge
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  BACKUP & WARTUNG                                                         █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+BACKUP ERSTELLEN:
+  cp data/duckrss.db data/duckrss.db.backup
+
+WIEDERHERSTELLEN:
+  cp data/duckrss.db.backup data/duckrss.db
+  sudo systemctl restart duckrss
+
+DATENBANK ZURÜCKSETZEN:
+  rm data/duckrss.db
+  python3 database.py
+
+LOGS BEREINIGEN:
+  sudo journalctl --vacuum-time=7d
+
+
+█████████████████████████████████████████████████████████████████████████████
+█                                                                           █
+█  LIZENZ & SUPPORT                                                         █
+█                                                                           █
+█████████████████████████████████████████████████████████████████████████████
+
+Lizenz: Open Source - Frei verwendbar
+
+Dokumentation:
+  • README.md (ausführlich)
+  • SCHNELLSTART.txt (Quick Reference)
+  • PROJEKT-ÜBERSICHT.txt (diese Datei)
+
+
+════════════════════════════════════════════════════════════════════════════
+
+           ___         _   ___  ___ ___ 
+          |   \ _  _ __| |_| _ \/ __/ __|
+          | |) | || / _| / /   /\__ \__ \
+          |___/ \_,_\__|_\_\_|_\|___/___/
+
+              🦆 DuckRSS v1.0
+
+        Made with 🦆 and ❤️ for the
+          Retro Computing Community
+
+            © 2026 - Debian Edition
+
+════════════════════════════════════════════════════════════════════════════
