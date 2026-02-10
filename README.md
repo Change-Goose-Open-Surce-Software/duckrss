@@ -33,7 +33,6 @@ Ein selbst-gehosteter RSS Feed Manager im Retro-Terminal-Style für Debian-Serve
 ### 🎨 Retro-Design
 - Terminal-inspiriertes Design
 - Grün-auf-Schwarz Farbschema
-- ASCII-Art und Animationen
 - Responsive für Desktop und Mobile
 
 ## Installation
