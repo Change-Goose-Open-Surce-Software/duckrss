@@ -257,10 +257,7 @@ class RSSManager:
         # Namespace für content:encoded registrieren
         ET.register_namespace('content', 'http://purl.org/rss/1.0/modules/content/')
         
-        rss = ET.Element('rss', {
-            'version': '2.0',
-            'xmlns:content': 'http://purl.org/rss/1.0/modules/content/'
-        })
+        rss = ET.Element('rss', {'version': '2.0'})
         channel = ET.SubElement(rss, 'channel')
         
         # Sicherstellen dass description nicht None ist
