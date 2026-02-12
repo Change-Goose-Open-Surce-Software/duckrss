@@ -4,7 +4,13 @@
 DuckRSS - RSS Feed Manager
 """
 
-import feedparser
+try:
+    import feedparser
+    FEEDPARSER_AVAILABLE = True
+except ImportError:
+    FEEDPARSER_AVAILABLE = False
+    print("Warning: feedparser not available - fetch_feed() will not work")
+
 import requests
 from datetime import datetime
 from database import get_db
@@ -83,6 +89,10 @@ class RSSManager:
     @staticmethod
     def fetch_feed(input_id):
         """Feed von URL abrufen und Items speichern"""
+        if not FEEDPARSER_AVAILABLE:
+            print("Error: feedparser module not available")
+            return False
+            
         conn = get_db()
         cursor = conn.cursor()
         
@@ -243,33 +253,67 @@ class RSSManager:
     
     @staticmethod
     def _generate_rss_xml(output, items):
-        """RSS 2.0 XML generieren"""
-        rss = ET.Element('rss', version='2.0')
+        """RSS 2.0 XML generieren - FIXED VERSION"""
+        # Namespace für content:encoded registrieren
+        ET.register_namespace('content', 'http://purl.org/rss/1.0/modules/content/')
+        
+        rss = ET.Element('rss', {
+            'version': '2.0',
+            'xmlns:content': 'http://purl.org/rss/1.0/modules/content/'
+        })
         channel = ET.SubElement(rss, 'channel')
         
+        # Sicherstellen dass description nicht None ist
+        description = output.get('description') or ''
+        
         ET.SubElement(channel, 'title').text = output['name']
-        ET.SubElement(channel, 'description').text = output.get('description', '')
+        ET.SubElement(channel, 'description').text = description
         ET.SubElement(channel, 'link').text = f"http://localhost:5000/exit/{output['slug']}.xml"
         ET.SubElement(channel, 'lastBuildDate').text = datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000')
         ET.SubElement(channel, 'generator').text = 'DuckRSS'
         
         for item in items:
             item_elem = ET.SubElement(channel, 'item')
-            ET.SubElement(item_elem, 'title').text = item['title']
-            if item['link']:
+            
+            # Title ist required
+            ET.SubElement(item_elem, 'title').text = item['title'] or 'Kein Titel'
+            
+            # Link ist optional
+            if item.get('link'):
                 ET.SubElement(item_elem, 'link').text = item['link']
-            ET.SubElement(item_elem, 'description').text = item['description'] or ''
-            if item['content']:
-                content_elem = ET.SubElement(item_elem, 'content:encoded')
+            
+            # Description - sicherstellen dass es nicht None ist
+            description_text = item.get('description') or ''
+            ET.SubElement(item_elem, 'description').text = description_text
+            
+            # Content:encoded - mit korrektem Namespace
+            if item.get('content'):
+                content_elem = ET.SubElement(item_elem, '{http://purl.org/rss/1.0/modules/content/}encoded')
                 content_elem.text = item['content']
-            if item['author']:
+            
+            # Author ist optional
+            if item.get('author'):
                 ET.SubElement(item_elem, 'author').text = item['author']
+            
+            # GUID ist required
             ET.SubElement(item_elem, 'guid').text = item['guid']
-            if item['published']:
-                pub_date = datetime.fromisoformat(item['published']) if isinstance(item['published'], str) else item['published']
-                ET.SubElement(item_elem, 'pubDate').text = pub_date.strftime('%a, %d %b %Y %H:%M:%S +0000')
+            
+            # PubDate ist optional
+            if item.get('published'):
+                try:
+                    if isinstance(item['published'], str):
+                        pub_date = datetime.fromisoformat(item['published'])
+                    else:
+                        pub_date = item['published']
+                    ET.SubElement(item_elem, 'pubDate').text = pub_date.strftime('%a, %d %b %Y %H:%M:%S +0000')
+                except:
+                    pass  # Skip bei Fehler
         
         # XML formatieren
         xml_str = ET.tostring(rss, encoding='unicode')
-        dom = minidom.parseString(xml_str)
-        return dom.toprettyxml(indent='  ')
+        try:
+            dom = minidom.parseString(xml_str)
+            return dom.toprettyxml(indent='  ', encoding='utf-8').decode('utf-8')
+        except:
+            # Fallback: unformatiert zurückgeben
+            return '<?xml version="1.0" encoding="UTF-8"?>\n' + xml_str
