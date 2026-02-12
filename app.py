@@ -9,6 +9,7 @@ import secrets
 from auth import Auth
 from rss_manager import RSSManager
 from database import get_db
+import traceback
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -231,13 +232,19 @@ def create_custom_feed():
 
 @app.route('/exit/<slug>.xml')
 def rss_feed(slug):
-    """Öffentlicher RSS Feed (keine Authentifizierung!)"""
-    xml = RSSManager.get_output_feed(slug)
-    
-    if xml:
-        return Response(xml, mimetype='application/rss+xml')
-    else:
-        return 'Feed nicht gefunden', 404
+    """Öffentlicher RSS Feed (keine Authentifizierung!) - WITH ERROR HANDLING"""
+    try:
+        xml = RSSManager.get_output_feed(slug)
+        
+        if xml:
+            return Response(xml, mimetype='application/rss+xml; charset=utf-8')
+        else:
+            return 'Feed nicht gefunden', 404
+    except Exception as e:
+        # Debugging: Fehler ausgeben
+        app.logger.error(f"Error generating RSS feed for {slug}: {str(e)}")
+        app.logger.error(traceback.format_exc())
+        return f'Fehler beim Generieren des Feeds: {str(e)}', 500
 
 # ============== Server starten ==============
 
@@ -255,4 +262,4 @@ if __name__ == '__main__':
     print("   Strg+C zum Beenden")
     print("")
     
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)
